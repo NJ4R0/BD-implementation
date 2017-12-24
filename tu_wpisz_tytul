@@ -1,0 +1,248 @@
+-- MySQL dump 10.16  Distrib 10.1.29-MariaDB, for Linux (x86_64)
+--
+-- Host: blackhat    Database: tu_wpisz_tytul
+-- ------------------------------------------------------
+-- Server version	10.1.29-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `AccountSettings`
+--
+
+DROP TABLE IF EXISTS `AccountSettings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `AccountSettings` (
+  `NickName` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `BudgetPerMonth` float NOT NULL DEFAULT '0',
+  `MonthStart` int(11) DEFAULT '1',
+  `PremiumSavedMoney` int(11) DEFAULT NULL,
+  PRIMARY KEY (`NickName`),
+  UNIQUE KEY `AccountSettings_NickName_uindex` (`NickName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `AccountSettings`
+--
+
+/*!40000 ALTER TABLE `AccountSettings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `AccountSettings` ENABLE KEYS */;
+
+--
+-- Table structure for table `Categories`
+--
+
+DROP TABLE IF EXISTS `Categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Categories` (
+  `SaleName` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Category` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`SaleName`),
+  UNIQUE KEY `Categories_SaleName_uindex` (`SaleName`),
+  KEY `Categories_CategoryTags_CategoryName_fk` (`Category`),
+  CONSTRAINT `Categories_CategoryTags_CategoryName_fk` FOREIGN KEY (`Category`) REFERENCES `CategoryTags` (`CategoryName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Categories`
+--
+
+/*!40000 ALTER TABLE `Categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Categories` ENABLE KEYS */;
+
+--
+-- Table structure for table `CategoryTags`
+--
+
+DROP TABLE IF EXISTS `CategoryTags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CategoryTags` (
+  `CategoryName` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`CategoryName`),
+  UNIQUE KEY `CategoryTags_CategoryName_uindex` (`CategoryName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CategoryTags`
+--
+
+/*!40000 ALTER TABLE `CategoryTags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CategoryTags` ENABLE KEYS */;
+
+--
+-- Table structure for table `Currencies`
+--
+
+DROP TABLE IF EXISTS `Currencies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Currencies` (
+  `Currency` char(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ToPLN` float NOT NULL,
+  PRIMARY KEY (`Currency`),
+  UNIQUE KEY `Currencies_Currency_uindex` (`Currency`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Currencies`
+--
+
+/*!40000 ALTER TABLE `Currencies` DISABLE KEYS */;
+INSERT INTO `Currencies` (`Currency`, `ToPLN`) VALUES ('PLN',1);
+/*!40000 ALTER TABLE `Currencies` ENABLE KEYS */;
+
+--
+-- Table structure for table `ShopDetails`
+--
+
+DROP TABLE IF EXISTS `ShopDetails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ShopDetails` (
+  `ShopID` int(11) DEFAULT NULL,
+  `Address` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Country` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `City` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`City`,`Country`,`Address`),
+  UNIQUE KEY `ShopDetails_Country_City_Address_uindex` (`Country`,`City`,`Address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ShopDetails`
+--
+
+/*!40000 ALTER TABLE `ShopDetails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ShopDetails` ENABLE KEYS */;
+
+--
+-- Table structure for table `Shops`
+--
+
+DROP TABLE IF EXISTS `Shops`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Shops` (
+  `ShopID` int(11) NOT NULL AUTO_INCREMENT,
+  `ShopName` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`ShopID`),
+  UNIQUE KEY `Shops_ShopID_uindex` (`ShopID`),
+  UNIQUE KEY `Shops_ShopName_uindex` (`ShopName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Shops`
+--
+
+/*!40000 ALTER TABLE `Shops` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Shops` ENABLE KEYS */;
+
+--
+-- Table structure for table `Transactions`
+--
+
+DROP TABLE IF EXISTS `Transactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Transactions` (
+  `Transaction ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Date` date DEFAULT NULL,
+  `NickName` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SaleName` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `MoneySpent` float NOT NULL DEFAULT '0',
+  `Currency` char(3) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'PLN',
+  `ShopID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Transaction ID`),
+  UNIQUE KEY `Transactions_Transaction ID_uindex` (`Transaction ID`),
+  KEY `Transactions_AccountSettings_NickName_fk` (`NickName`),
+  KEY `Transactions_Shops_ShopID_fk` (`ShopID`),
+  KEY `Transactions_Categories_SaleName_fk` (`SaleName`),
+  KEY `Transactions_Currencies_Currency_fk` (`Currency`),
+  CONSTRAINT `Transactions_AccountSettings_NickName_fk` FOREIGN KEY (`NickName`) REFERENCES `AccountSettings` (`NickName`),
+  CONSTRAINT `Transactions_Categories_SaleName_fk` FOREIGN KEY (`SaleName`) REFERENCES `Categories` (`SaleName`) ON UPDATE CASCADE,
+  CONSTRAINT `Transactions_Currencies_Currency_fk` FOREIGN KEY (`Currency`) REFERENCES `Currencies` (`Currency`) ON UPDATE CASCADE,
+  CONSTRAINT `Transactions_Shops_ShopID_fk` FOREIGN KEY (`ShopID`) REFERENCES `Shops` (`ShopID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Transactions`
+--
+
+/*!40000 ALTER TABLE `Transactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Transactions` ENABLE KEYS */;
+
+--
+-- Table structure for table `Users`
+--
+
+DROP TABLE IF EXISTS `Users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Users` (
+  `EMail` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `NickName` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  UNIQUE KEY `Users_EMail_uindex` (`EMail`),
+  UNIQUE KEY `Users_NickName_uindex` (`NickName`),
+  CONSTRAINT `Users_AccountSettings_NickName_fk` FOREIGN KEY (`NickName`) REFERENCES `AccountSettings` (`NickName`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Users_ValData_EMail_fk` FOREIGN KEY (`EMail`) REFERENCES `ValData` (`EMail`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Users`
+--
+
+/*!40000 ALTER TABLE `Users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Users` ENABLE KEYS */;
+
+--
+-- Table structure for table `ValData`
+--
+
+DROP TABLE IF EXISTS `ValData`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ValData` (
+  `EMail` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'janusz@example.com',
+  `Password` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Salt` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`EMail`),
+  UNIQUE KEY `ValData_EMail_uindex` (`EMail`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ValData`
+--
+
+/*!40000 ALTER TABLE `ValData` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ValData` ENABLE KEYS */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2017-12-24 15:03:29
