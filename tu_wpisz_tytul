@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.1.29-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.20, for Win64 (x86_64)
 --
--- Host: blackhat    Database: tu_wpisz_tytul
+-- Host: 127.0.0.1    Database: projecttask
 -- ------------------------------------------------------
--- Server version	10.1.29-MariaDB
+-- Server version	5.7.20-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,61 +16,65 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `AccountSettings`
+-- Table structure for table `accountsettings`
 --
 
-DROP TABLE IF EXISTS `AccountSettings`;
+DROP TABLE IF EXISTS `accountsettings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `AccountSettings` (
+CREATE TABLE `accountsettings` (
   `NickName` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `BudgetPerMonth` float NOT NULL DEFAULT '0',
   `MonthStart` int(11) DEFAULT '1',
-  `PremiumSavedMoney` int(11) DEFAULT NULL,
+  `PremiumSavedMoney` float DEFAULT NULL,
   PRIMARY KEY (`NickName`),
   UNIQUE KEY `AccountSettings_NickName_uindex` (`NickName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `AccountSettings`
+-- Dumping data for table `accountsettings`
 --
 
-/*!40000 ALTER TABLE `AccountSettings` DISABLE KEYS */;
-/*!40000 ALTER TABLE `AccountSettings` ENABLE KEYS */;
+LOCK TABLES `accountsettings` WRITE;
+/*!40000 ALTER TABLE `accountsettings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accountsettings` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `Categories`
+-- Table structure for table `categories`
 --
 
-DROP TABLE IF EXISTS `Categories`;
+DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Categories` (
+CREATE TABLE `categories` (
   `SaleName` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Category` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`SaleName`),
   UNIQUE KEY `Categories_SaleName_uindex` (`SaleName`),
   KEY `Categories_CategoryTags_CategoryName_fk` (`Category`),
-  CONSTRAINT `Categories_CategoryTags_CategoryName_fk` FOREIGN KEY (`Category`) REFERENCES `CategoryTags` (`CategoryName`)
+  CONSTRAINT `Categories_CategoryTags_CategoryName_fk` FOREIGN KEY (`Category`) REFERENCES `categorytags` (`CategoryName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Categories`
+-- Dumping data for table `categories`
 --
 
-/*!40000 ALTER TABLE `Categories` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Categories` ENABLE KEYS */;
+LOCK TABLES `categories` WRITE;
+/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `CategoryTags`
+-- Table structure for table `categorytags`
 --
 
-DROP TABLE IF EXISTS `CategoryTags`;
+DROP TABLE IF EXISTS `categorytags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CategoryTags` (
+CREATE TABLE `categorytags` (
   `CategoryName` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`CategoryName`),
   UNIQUE KEY `CategoryTags_CategoryName_uindex` (`CategoryName`)
@@ -78,20 +82,22 @@ CREATE TABLE `CategoryTags` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `CategoryTags`
+-- Dumping data for table `categorytags`
 --
 
-/*!40000 ALTER TABLE `CategoryTags` DISABLE KEYS */;
-/*!40000 ALTER TABLE `CategoryTags` ENABLE KEYS */;
+LOCK TABLES `categorytags` WRITE;
+/*!40000 ALTER TABLE `categorytags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `categorytags` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `Currencies`
+-- Table structure for table `currencies`
 --
 
-DROP TABLE IF EXISTS `Currencies`;
+DROP TABLE IF EXISTS `currencies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Currencies` (
+CREATE TABLE `currencies` (
   `Currency` char(3) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ToPLN` float NOT NULL,
   PRIMARY KEY (`Currency`),
@@ -100,45 +106,111 @@ CREATE TABLE `Currencies` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Currencies`
+-- Dumping data for table `currencies`
 --
 
-/*!40000 ALTER TABLE `Currencies` DISABLE KEYS */;
-INSERT INTO `Currencies` (`Currency`, `ToPLN`) VALUES ('PLN',1);
-/*!40000 ALTER TABLE `Currencies` ENABLE KEYS */;
+LOCK TABLES `currencies` WRITE;
+/*!40000 ALTER TABLE `currencies` DISABLE KEYS */;
+INSERT INTO `currencies` (`Currency`, `ToPLN`) VALUES ('PLN',1);
+/*!40000 ALTER TABLE `currencies` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `ShopDetails`
+-- Table structure for table `favourites`
 --
 
-DROP TABLE IF EXISTS `ShopDetails`;
+DROP TABLE IF EXISTS `favourites`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ShopDetails` (
-  `ShopID` int(11) DEFAULT NULL,
+CREATE TABLE `favourites` (
+  `NickName` varchar(32) NOT NULL,
+  `FavouriteName` varchar(64) NOT NULL,
+  `ShopID` int(11) NOT NULL,
+  `Cost` float DEFAULT NULL,
+  `Currency` char(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`NickName`,`FavouriteName`),
+  UNIQUE KEY `Favourites_NickName_FavouriteName_uindex` (`NickName`,`FavouriteName`),
+  KEY `Favourites_Currencies_Currency_fk` (`Currency`),
+  KEY `Favourites_Shops_ShopID_fk` (`ShopID`),
+  CONSTRAINT `Favourites_Currencies_Currency_fk` FOREIGN KEY (`Currency`) REFERENCES `currencies` (`Currency`) ON UPDATE CASCADE,
+  CONSTRAINT `Favourites_Shops_ShopID_fk` FOREIGN KEY (`ShopID`) REFERENCES `shops` (`ShopID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `favourites`
+--
+
+LOCK TABLES `favourites` WRITE;
+/*!40000 ALTER TABLE `favourites` DISABLE KEYS */;
+/*!40000 ALTER TABLE `favourites` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `routines`
+--
+
+DROP TABLE IF EXISTS `routines`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `routines` (
+  `RoutineName` varchar(64) NOT NULL,
+  `NickName` varchar(32) NOT NULL,
+  `FirstDate` date DEFAULT NULL,
+  `LastDate` date DEFAULT NULL,
+  `Day` int(11) DEFAULT NULL,
+  `Cost` float DEFAULT NULL,
+  `Currency` char(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`RoutineName`,`NickName`),
+  UNIQUE KEY `Routines_RoutineName_NickName_uindex` (`RoutineName`,`NickName`),
+  KEY `Routines_Currencies_Currency_fk` (`Currency`),
+  CONSTRAINT `Routines_Currencies_Currency_fk` FOREIGN KEY (`Currency`) REFERENCES `currencies` (`Currency`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `routines`
+--
+
+LOCK TABLES `routines` WRITE;
+/*!40000 ALTER TABLE `routines` DISABLE KEYS */;
+/*!40000 ALTER TABLE `routines` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `shopdetails`
+--
+
+DROP TABLE IF EXISTS `shopdetails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `shopdetails` (
+  `ShopName` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Address` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Country` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `City` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`City`,`Country`,`Address`),
-  UNIQUE KEY `ShopDetails_Country_City_Address_uindex` (`Country`,`City`,`Address`)
+  PRIMARY KEY (`ShopName`,`Address`,`Country`,`City`),
+  UNIQUE KEY `ShopDetails_Country_City_Address_uindex` (`ShopName`,`Country`,`City`,`Address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ShopDetails`
+-- Dumping data for table `shopdetails`
 --
 
-/*!40000 ALTER TABLE `ShopDetails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ShopDetails` ENABLE KEYS */;
+LOCK TABLES `shopdetails` WRITE;
+/*!40000 ALTER TABLE `shopdetails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `shopdetails` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `Shops`
+-- Table structure for table `shops`
 --
 
-DROP TABLE IF EXISTS `Shops`;
+DROP TABLE IF EXISTS `shops`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Shops` (
+CREATE TABLE `shops` (
   `ShopID` int(11) NOT NULL AUTO_INCREMENT,
   `ShopName` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`ShopID`),
@@ -148,20 +220,22 @@ CREATE TABLE `Shops` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Shops`
+-- Dumping data for table `shops`
 --
 
-/*!40000 ALTER TABLE `Shops` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Shops` ENABLE KEYS */;
+LOCK TABLES `shops` WRITE;
+/*!40000 ALTER TABLE `shops` DISABLE KEYS */;
+/*!40000 ALTER TABLE `shops` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `Transactions`
+-- Table structure for table `transactions`
 --
 
-DROP TABLE IF EXISTS `Transactions`;
+DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Transactions` (
+CREATE TABLE `transactions` (
   `Transaction ID` int(11) NOT NULL AUTO_INCREMENT,
   `Date` date DEFAULT NULL,
   `NickName` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -175,52 +249,56 @@ CREATE TABLE `Transactions` (
   KEY `Transactions_Shops_ShopID_fk` (`ShopID`),
   KEY `Transactions_Categories_SaleName_fk` (`SaleName`),
   KEY `Transactions_Currencies_Currency_fk` (`Currency`),
-  CONSTRAINT `Transactions_AccountSettings_NickName_fk` FOREIGN KEY (`NickName`) REFERENCES `AccountSettings` (`NickName`),
-  CONSTRAINT `Transactions_Categories_SaleName_fk` FOREIGN KEY (`SaleName`) REFERENCES `Categories` (`SaleName`) ON UPDATE CASCADE,
-  CONSTRAINT `Transactions_Currencies_Currency_fk` FOREIGN KEY (`Currency`) REFERENCES `Currencies` (`Currency`) ON UPDATE CASCADE,
-  CONSTRAINT `Transactions_Shops_ShopID_fk` FOREIGN KEY (`ShopID`) REFERENCES `Shops` (`ShopID`) ON UPDATE CASCADE
+  CONSTRAINT `Transactions_AccountSettings_NickName_fk` FOREIGN KEY (`NickName`) REFERENCES `accountsettings` (`NickName`),
+  CONSTRAINT `Transactions_Categories_SaleName_fk` FOREIGN KEY (`SaleName`) REFERENCES `categories` (`SaleName`) ON UPDATE CASCADE,
+  CONSTRAINT `Transactions_Currencies_Currency_fk` FOREIGN KEY (`Currency`) REFERENCES `currencies` (`Currency`) ON UPDATE CASCADE,
+  CONSTRAINT `Transactions_Shops_ShopID_fk` FOREIGN KEY (`ShopID`) REFERENCES `shops` (`ShopID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Transactions`
+-- Dumping data for table `transactions`
 --
 
-/*!40000 ALTER TABLE `Transactions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Transactions` ENABLE KEYS */;
+LOCK TABLES `transactions` WRITE;
+/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `Users`
+-- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `Users`;
+DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Users` (
+CREATE TABLE `users` (
   `EMail` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `NickName` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   UNIQUE KEY `Users_EMail_uindex` (`EMail`),
   UNIQUE KEY `Users_NickName_uindex` (`NickName`),
-  CONSTRAINT `Users_AccountSettings_NickName_fk` FOREIGN KEY (`NickName`) REFERENCES `AccountSettings` (`NickName`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Users_ValData_EMail_fk` FOREIGN KEY (`EMail`) REFERENCES `ValData` (`EMail`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `Users_AccountSettings_NickName_fk` FOREIGN KEY (`NickName`) REFERENCES `accountsettings` (`NickName`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Users_ValData_EMail_fk` FOREIGN KEY (`EMail`) REFERENCES `valdata` (`EMail`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Users`
+-- Dumping data for table `users`
 --
 
-/*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Users` ENABLE KEYS */;
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `ValData`
+-- Table structure for table `valdata`
 --
 
-DROP TABLE IF EXISTS `ValData`;
+DROP TABLE IF EXISTS `valdata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ValData` (
+CREATE TABLE `valdata` (
   `EMail` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'janusz@example.com',
   `Password` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Salt` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -230,11 +308,13 @@ CREATE TABLE `ValData` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ValData`
+-- Dumping data for table `valdata`
 --
 
-/*!40000 ALTER TABLE `ValData` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ValData` ENABLE KEYS */;
+LOCK TABLES `valdata` WRITE;
+/*!40000 ALTER TABLE `valdata` DISABLE KEYS */;
+/*!40000 ALTER TABLE `valdata` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -245,4 +325,4 @@ CREATE TABLE `ValData` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-24 15:03:29
+-- Dump completed on 2017-12-27  0:05:44
