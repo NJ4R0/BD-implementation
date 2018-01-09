@@ -1,3 +1,4 @@
+# ©Adam Friedensberg
 USE `tu_wpisz_tytul`;
 
 -- Triggers for database
