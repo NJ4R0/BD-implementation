@@ -1,10 +1,12 @@
-USE `ProjectTask`;
+# ©Adam Friedensberg
+USE `tu_wpisz_tytul`;
 
 -- Triggers for database
 -- Validate data input and update values in tables
 
 DELIMITER $$
-CREATE TRIGGER crncies_insert BEFORE INSERT ON currencies
+DROP TRIGGER IF EXISTS currencies_insert;
+CREATE TRIGGER currencies_insert BEFORE INSERT ON currencies
   FOR EACH ROW
   BEGIN
     IF (NEW.ToPLN <= 0) THEN
@@ -15,7 +17,8 @@ CREATE TRIGGER crncies_insert BEFORE INSERT ON currencies
 $$
 
 DELIMITER $$
-CREATE TRIGGER crncies_update BEFORE UPDATE ON currencies
+DROP TRIGGER IF EXISTS currencies_update;
+CREATE TRIGGER currencies_update BEFORE UPDATE ON currencies
   FOR EACH ROW
   BEGIN
     IF (NEW.ToPLN <= 0) THEN
@@ -26,10 +29,11 @@ CREATE TRIGGER crncies_update BEFORE UPDATE ON currencies
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS account_insert;
 CREATE TRIGGER account_insert BEFORE INSERT ON accountsettings
   FOR EACH ROW
   BEGIN
-    IF (NEW.BudgetPerMonth <= 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
+    IF (NEW.BudgetPerMonth < 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Wrong data input on budget or month day';
     END IF ;
@@ -37,10 +41,11 @@ CREATE TRIGGER account_insert BEFORE INSERT ON accountsettings
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS account_update;
 CREATE TRIGGER account_update BEFORE UPDATE ON accountsettings
   FOR EACH ROW
   BEGIN
-    IF (NEW.BudgetPerMonth <= 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
+    IF (NEW.BudgetPerMonth < 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Wrong data input on budget or month day';
     END IF ;
@@ -48,6 +53,7 @@ CREATE TRIGGER account_update BEFORE UPDATE ON accountsettings
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS rout_insert;
 CREATE TRIGGER rout_insert BEFORE INSERT ON routines
   FOR EACH ROW
   BEGIN
@@ -59,6 +65,7 @@ CREATE TRIGGER rout_insert BEFORE INSERT ON routines
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS fav_insert;
 CREATE TRIGGER fav_insert BEFORE INSERT ON favourites
   FOR EACH ROW
   BEGIN
@@ -70,6 +77,7 @@ CREATE TRIGGER fav_insert BEFORE INSERT ON favourites
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS tran_insert;
 CREATE TRIGGER tran_insert BEFORE INSERT ON transactions
   FOR EACH ROW
   BEGIN
@@ -81,10 +89,12 @@ CREATE TRIGGER tran_insert BEFORE INSERT ON transactions
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS user_insert;
 CREATE TRIGGER user_insert BEFORE INSERT ON users
   FOR EACH ROW
   BEGIN
-    IF ((NEW.EMail REGEXP '^[a-zA-Z0-9._]+@[a-zA-Z0-9._]+[.][a-zA-Z]{2,4}$') = 0) THEN
+    IF(!(NEW.EMail REGEXP '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')) #source: official regexp from W3C, on site "http://emailregex.com/"
+    THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Incorrect mail...';
     END IF ;
@@ -92,10 +102,12 @@ CREATE TRIGGER user_insert BEFORE INSERT ON users
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS val_insert;
 CREATE TRIGGER val_insert BEFORE INSERT ON valdata
   FOR EACH ROW
   BEGIN
-    IF ((NEW.EMail REGEXP '^[a-zA-Z0-9._]+@[a-zA-Z0-9._]+[.][a-zA-Z]{2,4}$') = 0) THEN
+    IF(!(NEW.EMail REGEXP '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')) #source: official regexp from W3C, on site "http://emailregex.com/"
+    THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Incorrect mail...';
     END IF ;
