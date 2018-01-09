@@ -33,7 +33,7 @@ DROP TRIGGER IF EXISTS account_insert;
 CREATE TRIGGER account_insert BEFORE INSERT ON accountsettings
   FOR EACH ROW
   BEGIN
-    IF (NEW.BudgetPerMonth <= 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
+    IF (NEW.BudgetPerMonth < 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Wrong data input on budget or month day';
     END IF ;
@@ -45,7 +45,7 @@ DROP TRIGGER IF EXISTS account_update;
 CREATE TRIGGER account_update BEFORE UPDATE ON accountsettings
   FOR EACH ROW
   BEGIN
-    IF (NEW.BudgetPerMonth <= 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
+    IF (NEW.BudgetPerMonth < 0 OR NEW.MonthStart <= 0 OR NEW.MonthStart >= 32) THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Wrong data input on budget or month day';
     END IF ;
@@ -93,7 +93,8 @@ DROP TRIGGER IF EXISTS user_insert;
 CREATE TRIGGER user_insert BEFORE INSERT ON users
   FOR EACH ROW
   BEGIN
-    IF ((NEW.EMail REGEXP '^[a-zA-Z0-9._]+@[a-zA-Z0-9._]+[.][a-zA-Z]{2,4}$') = 0) THEN
+    IF(!(NEW.EMail REGEXP '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')) #source: official regexp from W3C, on site "http://emailregex.com/"
+    THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Incorrect mail...';
     END IF ;
@@ -105,7 +106,8 @@ DROP TRIGGER IF EXISTS val_insert;
 CREATE TRIGGER val_insert BEFORE INSERT ON valdata
   FOR EACH ROW
   BEGIN
-    IF ((NEW.EMail REGEXP '^[a-zA-Z0-9._]+@[a-zA-Z0-9._]+[.][a-zA-Z]{2,4}$') = 0) THEN
+    IF(!(NEW.EMail REGEXP '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')) #source: official regexp from W3C, on site "http://emailregex.com/"
+    THEN
       SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Incorrect mail...';
     END IF ;
