@@ -77,6 +77,32 @@ CREATE TRIGGER fav_insert BEFORE INSERT ON favourites
 $$
 
 DELIMITER $$
+DROP TRIGGER IF EXISTS shop_insert;
+CREATE TRIGGER shop_insert BEFORE INSERT ON shops
+  FOR EACH ROW
+  BEGIN
+    IF ((SELECT count(*) FROM shops WHERE NEW.ShopName=ShopName)<>0)
+    THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'shop already exists';
+    END IF;
+  END
+$$
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS shop_update;
+CREATE TRIGGER shop_insert BEFORE UPDATE ON shops
+  FOR EACH ROW
+  BEGIN
+    IF ((SELECT count(*) FROM shops WHERE NEW.ShopName=ShopName)<>0)
+    THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'cannot change name to another. New name exists in database';
+    END IF;
+  END
+$$
+
+DELIMITER $$
 DROP TRIGGER IF EXISTS tran_insert;
 CREATE TRIGGER tran_insert BEFORE INSERT ON transactions
   FOR EACH ROW
