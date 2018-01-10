@@ -25,3 +25,33 @@ CREATE PROCEDURE add_user(nick VARCHAR(32), mail VARCHAR(128), passhash VARCHAR(
     INSERT INTO accountsettings(NickName) VALUE (nick);
   END
 $$
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS add_currency;
+CREATE PROCEDURE add_currency(name char(3), fToPLN FLOAT)
+  BEGIN
+    IF !(name REGEXP '^[A-Z]{3}$')
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Currency name must be 3-letter tag';
+    END IF;
+    IF ((SELECT count(*) FROM currencies WHERE Currency = name)=0)
+      THEN
+        INSERT INTO currencies VALUE (name, fToPLN);
+      ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Currency already exists';
+    END IF;
+  END
+$$
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS set_account_settings;
+CREATE PROCEDURE set_account_settings(nick VARCHAR(32), budget float, startofmonth int(11))
+  BEGIN
+    UPDATE accountsettings
+      SET BudgetPerMonth = budget WHERE budget IS NOT NULL AND nick = NickName;
+    UPDATE accountsettings
+      SET MonthStart = startofmonth WHERE startofmonth IS NOT NULL AND nick = NickName;
+  END
+$$
