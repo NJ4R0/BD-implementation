@@ -91,7 +91,7 @@ $$
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS shop_update;
-CREATE TRIGGER shop_insert BEFORE UPDATE ON shops
+CREATE TRIGGER shop_update BEFORE UPDATE ON shops
   FOR EACH ROW
   BEGIN
     IF ((SELECT count(*) FROM shops WHERE NEW.ShopName=ShopName)<>0)

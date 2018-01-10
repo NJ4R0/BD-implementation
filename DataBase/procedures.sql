@@ -86,7 +86,7 @@ CREATE PROCEDURE add_transaction(time DATE, usernick VARCHAR(32), transactionnam
     IF (price<0)
       THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'price cannot be negative'
+        SET MESSAGE_TEXT = 'price cannot be negative';
     END IF;
     IF (cCurrency NOT IN (SELECT Currency FROM currencies))
       THEN
