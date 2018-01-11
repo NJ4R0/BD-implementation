@@ -4,6 +4,10 @@ import pymysql as mariadb
 this file contains operations on database
 """
 
+CONST_DBHOST = 'localhost'
+CONST_DBUSER = 'project'
+CONST_DBPASSWD = 'x3roVm'
+
 
 def database_connect(dbhost, dbuser, dbpasswd):
     """

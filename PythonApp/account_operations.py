@@ -31,7 +31,7 @@ def signup_user(username: str, email: str, password: str) -> bool:
         signature = rsa.sign(password.encode('utf-8'), priv, 'SHA-512').hex()
         key = rsa.PublicKey.save_pkcs1(pub, 'DER').hex()
         execute_sql_command(
-            database_connect('localhost', 'user', 'userpassword'),
+            database_connect(CONST_DBHOST, CONST_DBUSER, CONST_DBPASSWD),
             "CALL add_user( \"" + username + "\", \"" + email + "\", \"" + signature + "\", \"" + key + "\" )"
         )  # TODO: localhost
         return True
@@ -53,7 +53,7 @@ def validate_user(email, password):
 
     try:
         (signature, key) = execute_sql_command(
-            database_connect('localhost', 'user', 'userpassword'),
+            database_connect(CONST_DBHOST, CONST_DBUSER, CONST_DBPASSWD),
             "SELECT valdata.Password, valdata.`key` FROM valdata WHERE EMail = '" + email + "'"
         )[0]  # TODO: localhost
         pubkey = rsa.PublicKey.load_pkcs1(unhexlify(key), 'DER')
