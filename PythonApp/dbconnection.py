@@ -9,7 +9,7 @@ CONST_DBUSER = 'project'
 CONST_DBPASSWD = 'x3roVm'
 
 
-def database_connect(dbhost, dbuser, dbpasswd):
+def database_connect(dbhost=CONST_DBHOST, dbuser=CONST_DBUSER, dbpasswd=CONST_DBPASSWD):
     """
     connects to database. you can store the return to some variable to not repeat that
     :param dbhost: name or IP of mariadb host
