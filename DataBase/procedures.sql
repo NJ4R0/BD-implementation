@@ -3,7 +3,7 @@ USE `tu_wpisz_tytul`;
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS add_user;
-CREATE PROCEDURE add_user(nick VARCHAR(32), mail VARCHAR(128), passhash VARCHAR(128), pkey VARCHAR(280)) #comment: password is not necessary to know in any stage of server, and that will provide more safety
+CREATE PROCEDURE add_user(nick VARCHAR(32), mail VARCHAR(128), passhash VARCHAR(256), pkey VARCHAR(280)) #comment: password is not necessary to know in any stage of server, and that will provide more safety
   BEGIN
     IF (!(nick REGEXP '^[a-zA-Z0-9]+$'))
     THEN
@@ -23,6 +23,7 @@ CREATE PROCEDURE add_user(nick VARCHAR(32), mail VARCHAR(128), passhash VARCHAR(
     END IF;
     INSERT INTO valdata VALUE (mail, passhash, pkey);
     INSERT INTO accountsettings (NickName) VALUE (nick);
+    INSERT INTO users VALUE (mail, nick);
   END
 $$
 
