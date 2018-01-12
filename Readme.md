@@ -1,20 +1,4 @@
-Generalna instrukcja pracy:
-
--Nie ruszać mastera!!!
-
--Aby wprowadzić zmiany, należy stworzyć i potem pracować na własnym branchu, właściciel repo będzie co jakiś czas mergował rozwiązując konfliktu
-
--Na repo z sql znajduje się tylko plik wygenerowany przez MySqlDump, pozostałe pliki to pythonowe, żeby nie mieć śmieci na repo
-
-
-Instrukcja tworzenia nowego brancha:
-
--z konsoli zapomniałem, wstawię potem
-
--z GitHuba jest łatwo, wystarczy kliknąć na Branch:current_branch w sekcji Code i wpisać nazwę nowego brancha
-
-
-
-Wesołych Świąt i przyjemnego Kodzenia
-
-~NJ4R0
+Krótki opis gdzie co się znajduje:
+główne funkcje aplikacji oraz miejsca w których aplikacja łączy się z bazą danych to pliki app.py oraz cały folder PythonApp, w którym mieści się cały backend aplikacji. Oczywiście input na te wejścia jest sprawdzany dla bezpieczeństwa regexpem.
+Życzymy przyjemnego sprawdzania,
+J4R0 & Hiirokasu
