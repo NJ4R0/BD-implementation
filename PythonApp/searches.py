@@ -29,32 +29,41 @@ def list_all_shops() -> tuple:
         print(e)
 
 
-def simple_list_my_transactions(username: str) -> tuple:
+def simple_list_my_transactions(username: str):
     """
-    lists all user's transactions. for now in very simple way, maybe it will be changed later
-    format:
-    single_record = list_my_transactions('examplejanusz')[i]
-    single_record[0] - TransactionID
-    single_record[1] - Date
-    single_record[2] - username
-    single_record[3] - salename
-    single_record[4] - money spent
-    single_record[5] - Currency
-    single_record[6] - ShopID
+    lists all user's transactions
     :param username: name of user
-    :return: returns list of transactions in a tuple
+    :return: returns list of transactions in json
     """
     if not regexp.match('[A-Za-z0-9]+'):
-        print("username invalid. dont be a hacker")
-        return ()
+        return Exception
     try:
         connection = database_connect()
-        return execute_sql_command(connection,
-                                   "SELECT * FROM transactions WHERE NickName = \'{0}\'".format(username)
-                                   )
+        trans = execute_sql_command(
+            connection,
+            """
+                SELECT `Transaction ID`, `Date`, NickName, SaleName, MoneySpent, Currency, ShopName, Category 
+                FROM transactions 
+                JOIN categories c ON transactions.SaleName = c.SaleName
+                JOIN shops s ON transactions.ShopID = s.ShopID
+                WHERE NickName = '{0}'
+            """.format(username)
+        )
+        ret = []
+        for t in trans:
+            ret.append({
+                    'ID': t[0],
+                    'Datte': t[1],
+                    'Nick': t[2],
+                    'Sale': t[3],
+                    'Cost': t[4],
+                    'Currency': t[5],
+                    'Shop': t[6],
+                    'Cat': t[7]
+            })
+        return json.dumps(ret)
     except Exception as e:
-        print(e)
-        return ()
+        return e
 
 
 def list_routines(username: str):

@@ -8,7 +8,7 @@ def add_transaction(
         username: str,
         transactionname: str,
         categoryname: str,
-        price: float,
+        price,
         currency: str,
         shopname: str
 ) -> bool:
@@ -20,9 +20,9 @@ def add_transaction(
             regexp.match('[A-Za-z0-9]+', transactionname) and
             regexp.match('[A-Z]{3}', currency) and
             regexp.match('[A-Za-z0-9]', shopname) and
-            regexp.match('[A-Za-z]', categoryname)
+            regexp.match('[A-Za-z]', categoryname) and
+            regexp.match('\d+([.,]\d{2})?', price)
     ):
-        print("wrong input format")
         return False
     try:
         execute_sql_command(

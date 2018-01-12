@@ -137,25 +137,7 @@ def getTransactions():
     try:
         if session.get('user'):
             _user = session.get('user')
-
-            con = mysql.connect()
-            cur = con.cursor()
-            cur.callproc('show_tran', (_user,))
-            shops = cur.fetchall()
-
-            shops_dict = []
-            for shop in shops:
-                shop_dict = {
-                    'ID': shop[0],
-                    'Datte': shop[1],
-                    'Nick': shop[2],
-                    'Sale': shop[3],
-                    'Cost': shop[4],
-                    'Currency': shop[5],
-                    'Shop': shop[8]}
-                shops_dict.append(shop_dict)
-
-            return json.dumps(shops_dict)
+            return simple_list_my_transactions(_user)
         else:
             return render_template('error.html', error='Unauthorized Access')
     except Exception as e:
@@ -173,18 +155,10 @@ def addTransaction():
             _category = request.form['inputCategory']
             _shop = request.form['inputShops']
             _user = session.get('user')
-
-            con = mysql.connect()
-            cur = con.cursor()
-            cur.callproc('add_transaction', (_date, _user, _title, _category, _cost, _currency, _shop))
-            data = cur.fetchall()
-
-            if len(data) is 0:
-                con.commit()
+            if add_transaction(_date, _user, _title, _category, _cost, _currency, _shop):
                 return redirect('/showTransactions')
             else:
                 return render_template('error.html', error='An error occurred!')
-
         else:
             return render_template('error.html', error='Unauthorized Access')
     except Exception as e:
@@ -203,13 +177,18 @@ def addRuotine():
             _ldate = request.form['inputFinishDate']
             _user = session.get('user')
 
-            con = mysql.connect()
-            cur = con.cursor()
+            if not regexp.match('[A-Za-z0-9]', _title):
+                return render_template('error.html', error='Input data is unsecure. Please use only digits and letters')
+            if not (regexp.match('\d{4}-\d{2}-\d{2}', _fdate) and regexp.match('\d{4}-\d{2}-\d{2}')):
+                return render_template('error.html', error='Wrong date format')
+
+            connection = database_connect()
+            cur = connection.cursor()
             cur.callproc('add_routine', (_fdate, _ldate, _dayy, _user, _title, _cost, _currency))
             data = cur.fetchall()
 
             if len(data) is 0:
-                con.commit()
+                connection.commit()
                 return redirect('/showRoutines')
             else:
                 return render_template('error.html', error='An error occurred!')
@@ -229,8 +208,14 @@ def addFavourite():
             _currency = request.form['inputCurrency']
             _shop = request.form['inputShops']
             _user = session.get('user')
+            if not (
+                regexp.match('[A-Za-z0-9]', _title) and
+                regexp.match('[A-Za-z0-9]', _shop) and
+                regexp.match('[A-Za-z0-9]', _user)
+            ):
+                return render_template('error.html', error='Input data is unsecure. Please use only digits and letters')
 
-            con = mysql.connect()
+            con = database_connect()
             cur = con.cursor()
             cur.callproc('add_favourite', (_user, _title, _cost, _currency, _shop))
             data = cur.fetchall()
@@ -255,7 +240,6 @@ def addShop():
             _country = request.form['inputCountry']
             _city = request.form['inputCity']
             _address = request.form['inputAddress']
-            _user = session.get('user')
 
             con = mysql.connect()
             cur = con.cursor()
