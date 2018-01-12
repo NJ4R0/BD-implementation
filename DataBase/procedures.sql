@@ -3,7 +3,7 @@ USE `tu_wpisz_tytul`;
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS add_user;
-CREATE PROCEDURE add_user(nick VARCHAR(32), mail VARCHAR(128), passhash VARCHAR(256), pkey VARCHAR(280)) #comment: password is not necessary to know in any stage of server, and that will provide more safety
+CREATE PROCEDURE add_user(nick VARCHAR(32), mail VARCHAR(128), passhash VARCHAR(256), pkey VARCHAR(280), answer CHAR(1)) #comment: password is not necessary to know in any stage of server, and that will provide more safety
   BEGIN
     IF (!(nick REGEXP '^[a-zA-Z0-9]+$'))
     THEN
@@ -23,14 +23,14 @@ CREATE PROCEDURE add_user(nick VARCHAR(32), mail VARCHAR(128), passhash VARCHAR(
     END IF;
     INSERT INTO valdata VALUE (mail, passhash, pkey);
     INSERT INTO accountsettings (NickName) VALUE (nick);
-    INSERT INTO users VALUE (mail, nick);
+    INSERT INTO users VALUE (mail, nick,answer);
   END
 $$
 
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS set_account_settings;
-CREATE PROCEDURE set_account_settings(nick VARCHAR(32), budget FLOAT, startofmonth INT(11))
+CREATE PROCEDURE set_account_settings(nick VARCHAR(32), budget DECIMAL, startofmonth INT(11))
   BEGIN
     UPDATE accountsettings
     SET BudgetPerMonth = budget
@@ -43,7 +43,7 @@ $$
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS add_currency;
-CREATE PROCEDURE add_currency(name CHAR(3), fToPLN FLOAT)
+CREATE PROCEDURE add_currency(name CHAR(3), fToPLN DECIMAL)
   BEGIN
     IF !(name REGEXP '^[A-Z]{3}$')
     THEN
@@ -80,7 +80,7 @@ $$
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS add_transaction;
-CREATE PROCEDURE add_transaction(time DATE, usernick VARCHAR(32), transactionname VARCHAR(64), categoryname VARCHAR(32), price FLOAT, cCurrency CHAR(3), shop VARCHAR(64))
+CREATE PROCEDURE add_transaction(time DATE, usernick VARCHAR(32), transactionname VARCHAR(64), categoryname VARCHAR(32), price DECIMAL, cCurrency CHAR(3), shop VARCHAR(64))
   BEGIN
     IF (price<0)
       THEN
@@ -98,7 +98,7 @@ CREATE PROCEDURE add_transaction(time DATE, usernick VARCHAR(32), transactionnam
     END IF;
     IF(transactionname NOT IN (SELECT SaleName FROM categories))
     THEN
-        IF(categoryname NOT IN (SELECT CategoryName FROM categories))
+        IF(categoryname NOT IN (SELECT Category FROM categories))
         THEN
           SIGNAL SQLSTATE '45000'
           SET MESSAGE_TEXT = 'chosen category does not exist';
@@ -107,5 +107,46 @@ CREATE PROCEDURE add_transaction(time DATE, usernick VARCHAR(32), transactionnam
         END IF; # TODO: Warning if chosen category is not equal to existing pair in database
     END IF;
     INSERT INTO transactions(Date, NickName, SaleName, MoneySpent, Currency, ShopID) VALUE (time, usernick, transactionname, price, cCurrency, (SELECT ShopID FROM shops WHERE shop = ShopName LIMIT 1));
+  END
+$$
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS add_routine;
+CREATE PROCEDURE add_routine(ftime DATE, ltime DATE, dayy INT(11), usernick VARCHAR(32), transactionname VARCHAR(64), price DECIMAL, cCurrency CHAR(3))
+  BEGIN
+    IF (price<0)
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'price cannot be negative';
+    END IF;
+    IF (cCurrency NOT IN (SELECT Currency FROM currencies))
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'given currency does not exist in database';
+    END IF;
+    INSERT INTO routines(RoutineName, NickName, FirstDate, LastDate, Day, Cost, Currency) VALUE (transactionname, usernick, ftime, ltime, dayy, price, cCurrency);
+  END
+$$
+
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS add_favourite;
+CREATE PROCEDURE add_favourite(usernick VARCHAR(32), transactionname VARCHAR(64), price DECIMAL, cCurrency CHAR(3), shop VARCHAR(64))
+  BEGIN
+    IF (price<0)
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'price cannot be negative';
+    END IF;
+    IF (cCurrency NOT IN (SELECT Currency FROM currencies))
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'given currency does not exist in database';
+    END IF;
+    IF (shop NOT IN (SELECT ShopName FROM shops))
+    THEN
+      CALL add_shop(shop);
+    END IF;
+    INSERT INTO favourites(NickName, FavouriteName, ShopID, Cost, Currency) VALUE (usernick, transactionname, (SELECT ShopID FROM shops WHERE shop = ShopName LIMIT 1), price, cCurrency);
   END
 $$
