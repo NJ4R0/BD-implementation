@@ -32,7 +32,7 @@ def signup_user(username: str, email: str, password: str) -> bool:
         key = rsa.PublicKey.save_pkcs1(pub, 'DER').hex()
         execute_sql_command(
             database_connect(CONST_DBHOST, CONST_DBUSER, CONST_DBPASSWD),
-            "CALL add_user( \"" + username + "\", \"" + email + "\", \"" + signature + "\", \"" + key + "\" )"
+            "CALL add_user( \'" + username + "\', \'" + email + "\', \'" + signature + "\', \'" + key + "\' )"
         )  # TODO: localhost
         return True
     except Exception as e:
@@ -40,7 +40,7 @@ def signup_user(username: str, email: str, password: str) -> bool:
         return False
 
 
-def validate_user(email, password):
+def validate_user(email: str, password: str) -> bool:
     """
     checks if email and password are correct
     :param email: email of user
@@ -54,7 +54,7 @@ def validate_user(email, password):
     try:
         (signature, key) = execute_sql_command(
             database_connect(CONST_DBHOST, CONST_DBUSER, CONST_DBPASSWD),
-            "SELECT valdata.Password, valdata.`key` FROM valdata WHERE EMail = '" + email + "'"
+            "SELECT valdata.Password, valdata.'key' FROM valdata WHERE EMail = '{0}'".format(email)
         )[0]  # TODO: localhost
         pubkey = rsa.PublicKey.load_pkcs1(unhexlify(key), 'DER')
         return rsa.verify(password.encode('utf-8'), unhexlify(signature), pubkey)
@@ -62,3 +62,37 @@ def validate_user(email, password):
     except Exception as e:
         print("some error occured. if your password and email is correct please contact our programmer")
         return False
+
+
+def set_monthly_budget(username: str, amount: float) -> bool:
+    if not regexp.match('[A-Za-z0-9]+', username):
+        print("username invalid")
+        return False
+    try:
+        execute_sql_command(
+            database_connect(),
+            "UPDATE accountsettings SET BudgetPerMonth = {0} WHERE NickName = \'{1}\';".format(str(amount), username)
+        )
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+
+def set_month_start(username: str, monthday: int) -> bool:
+    if not regexp.match('[A-Za-z0-9]+', username):
+        print("username invalid")
+        return False
+    if monthday>28 or monthday < 1:
+        print("day of the month is too big or too small")
+        return False
+    try:
+        execute_sql_command(
+            database_connect(),
+            "UPDATE accountsettings SET MonthStart = {0} WHERE NickName = {1}".format(str(monthday), username)
+        )
+        return True
+    except Exception as e:
+        print(e)
+        return False
+

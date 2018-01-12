@@ -9,7 +9,7 @@ CONST_DBUSER = 'project'
 CONST_DBPASSWD = 'x3roVm'
 
 
-def database_connect(dbhost, dbuser, dbpasswd):
+def database_connect(dbhost=CONST_DBHOST, dbuser=CONST_DBUSER, dbpasswd=CONST_DBPASSWD) -> mariadb.Connection:
     """
     connects to database. you can store the return to some variable to not repeat that
     :param dbhost: name or IP of mariadb host
@@ -27,12 +27,13 @@ def database_connect(dbhost, dbuser, dbpasswd):
     return conn
 
 
-def execute_sql_command(connection, statement):  # Warning! that is insecure and musn't be used as GUI function!
+def execute_sql_command(connection: mariadb.Connection, statement: str):
+    # Warning! that is insecure and musn't be used as GUI function!
     """
     executes any sql command
     :param connection: Connection class on wich query will operate
     :param statement: String to execute sql query
-    :return: void
+    :return:
     """
     isinstance(connection, mariadb.Connection.__class__)
     cursor = connection.cursor()
