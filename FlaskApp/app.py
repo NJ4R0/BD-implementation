@@ -1,9 +1,8 @@
 from flask import Flask, render_template, json, request, redirect, session
 from flask.ext.mysql import MySQL
-import rsa
 from PythonApp.searches import *
 from PythonApp.transaction_operations import *
-from binascii import unhexlify
+from PythonApp.account_operations import *
 import datetime
 
 app = Flask(__name__)
@@ -241,13 +240,19 @@ def addShop():
             _city = request.form['inputCity']
             _address = request.form['inputAddress']
 
-            con = mysql.connect()
+            if not (
+                regexp.match('[A-Za-z0-9]', _name) and
+                regexp.match('[A-Za-z0-9]', _city) and
+                regexp.match('[A-Za-z0-9]', _address) and
+                regexp.match('[A-Za-z0-9]', _country)
+            ):
+                return render_template('error.html', error='Input data is unsecure. Please use only digits and letters')
+
+            con = database_connect()
             cur = con.cursor()
-            # cur2 = con.cursor()
             if _name and _country and _city and _address:
                 cur.callproc('add_shop', (_name,))
                 cur.callproc('describe_shop', (_name, _address, _country, _city))
-                # data2 = cur2.fetchall()
                 data = cur.fetchall()
             else:
                 cur.callproc('add_shop', (_name,))
@@ -277,32 +282,20 @@ def validateLogin():
         _username = request.form['inputEmail']
         _password = request.form['inputPassword']
 
-        # connect to mysql
+        if not regexp.match('[A-Za-z0-9]', _username):
+            return render_template('error.html', error='WTF? Do you want to hack me?')
 
-        con = mysql.connect()
-        cur = con.cursor()
-        cur.callproc('sp_validateLogin', (_username,))
-        # data = cursor._rows
-        data = cur.fetchall()
-
-        if len(data) > 0:
-            pubkey = rsa.PublicKey.load_pkcs1(unhexlify(str(data[0][2])), 'DER')
-            if rsa.verify(_password.encode('utf-8'), unhexlify(str(data[0][1])), pubkey):
-                session['user'] = data[0][0]
+        if validate_user(_username, _password):
+                session['user'] = execute_sql_command(
+                    database_connect(),
+                    """
+                        SELECT NickName FROM users WHERE EMail = '{0}'
+                    """.format(_username))[0][0]  # here is the only place with select enjoy hacking! (ofc impossible)
                 return redirect('/userHome')
-            else:
-                return render_template('error.html', error='Wrong Email address or Password.')
         else:
             return render_template('error.html', error='XDWrong Email address or Password.')
-
-
     except Exception as e:
         return render_template('error.html', error=str(e))
-    # finally:
-    # cursor.close()
-
-
-# con.close()
 
 
 @app.route('/signUp', methods=['POST', 'GET'])
@@ -312,34 +305,19 @@ def signUp():
         _name = request.form['inputName']
         _email = request.form['inputEmail']
         _password = request.form['inputPassword']
-        _answer = request.form['inputPremium']
 
         # validate the received values
         if _name and _email and _password:
-            (pub, priv) = rsa.newkeys(1024)
-            signature = rsa.sign(_password.encode('utf-8'), priv, 'SHA-512').encode("hex")
-            key = rsa.PublicKey.save_pkcs1(pub, 'DER').encode("hex")
-            con = mysql.connect()
-            cur = con.cursor()
-            # _hashed_password = generate_password_hash(_password)
-            cur.callproc('add_user', (_name, _email, signature, key, _answer))
-            data = cur.fetchall()
-
-            if len(data) is 0:
-                con.commit()
+            if signup_user(_name, _email, _password):
                 return json.dumps({'message': 'User created successfully !'})
             else:
-                return json.dumps({'error': str(data[0])})
+                return json.dumps({'error': 'something went wrong'})
         else:
             return json.dumps({'html': '<span>Enter the required fields</span>'})
 
     except Exception as e:
         return json.dumps({'errorxd': str(e)})
-    # finally:
-    # cursor.close()
-    # conn.close()
 
 
 if __name__ == "__main__":
     app.run(host="localhost", port=5010)
-# app.run()
