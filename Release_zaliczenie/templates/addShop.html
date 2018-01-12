@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python_Flask_SQL App</title>
+ 
+ 
+    <link href="{{ url_for('static',filename='styles/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='styles/jumbotron-narrow.css') }}" rel="stylesheet">
+ 
+    <script type="text/javascript" src="{{ url_for('static',filename='js/JQuery.js') }}"></script>
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation"><a href="/showShops">Go Back</a>
+                    <li role="presentation" class="active"><a href="/userHome">Home</a>
+                    </li>
+                    <li role="presentation" class="active"><a href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">tu_wpisz_tytul App</h3>
+        </div>
+        <section>
+            <form class="form-horizontal" method="post" action="/addShop">
+                <fieldset>
+ 
+                    <!-- Form Name -->
+                    <legend>Add new Shop</legend>
+ 
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtName">Name</label>
+                        <div class="col-md-4">
+                            <input id="txtName" name="inputName" type="text" placeholder="placeholder" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtCountry">Country</label>
+                        <div class="col-md-4">
+                            <input id="txtCountry" name="inputCountry" type="text" placeholder="placeholder" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtCity">City</label>
+                        <div class="col-md-4">
+                            <input id="txtCity" name="inputCity" type="text" placeholder="placeholder" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtAddress">Address</label>
+                        <div class="col-md-4">
+                            <input id="txtAddress" name="inputAddress" type="text" placeholder="placeholder" class="form-control input-md">
+                        </div>
+                    </div>
+ 
+                   
+ 
+                    <!-- Button -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="singlebutton"></label>
+                        <div class="col-md-4">
+                            <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Add Shop" />
+                        </div>
+                    </div>
+ 
+                </fieldset>
+            </form>
+ 
+        </section>
+        <footer class="footer">
+            <p>&copy; TWT App | Adam & J4r0 | 2018</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>

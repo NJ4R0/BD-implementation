@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Unauthorized Access:: Python_Flask_SQL App</title>
+ 
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/bootstrap.min.css') }}">
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/jumbotron-narrow.css') }}">
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Home</a>
+                    </li>
+                    <li role="presentation"><a href="/showSignin">Sign In</a>
+                    </li>
+                    <li role="presentation"><a href="/showSignUp">Sign Up</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">tu_wpisz_tytul App</h3>
+        </div>
+ 
+        <div class="jumbotron">
+            <h1>{{error}}</h1>
+        </div>
+ 
+ 
+ 
+        <footer class="footer">
+            <p>&copy; TWT App | Adam & J4r0 | 2018</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>
