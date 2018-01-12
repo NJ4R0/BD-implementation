@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python_Flask_SQL App</title>
+ 
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/bootstrap.min.css') }}">
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/jumbotron-narrow.css') }}">
+
+    <link link href="{{ url_for('static',filename='signup.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/JQuery.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.tmpl.js') }}"></script>
+
+
+    <script>
+            $(function () {
+            $.ajax({
+                url: '/getRoutines',
+                type: 'GET',
+                success: function (res) {
+                    var wishObj = JSON.parse(res);
+                    $('#ulist').empty();
+                    $('#listTemplate').tmpl(wishObj).appendTo('#ulist');
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+ 
+<style>
+     .trash { color:rgb(209, 91, 71); }
+.panel-body .checkbox { display:inline-block;margin:0px; }
+.list-group { margin-bottom:0px; }
+   </style>
+
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+		    <li role="presentation"><a href="/showAddTransaction">New Transaction</a></li>
+                    <li role="presentation" class="active"><a href="/userHome">Home</a>
+                    <li role="presentation" class="active"><a href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">tu_wpisz_tytul App</h3>
+        </div>
+ 
+        <script id="listTemplate" type="text/x-jQuery-tmpl">
+            <li class="list-group-item">
+                <div class="checkbox">
+                    <label>
+                        ${ID}, ${Datte}, ${Nick}, ${Sale}, ${Cost}, ${Currency}, ${Shop}
+                    </label>
+                </div>
+            </li>
+        </script>
+
+         <div class="row">
+            <div class="col-md-12">
+
+                <div class="panel-body">
+
+                    <ul id="ulist" class="list-group"></ul>
+                </div>
+
+            </div>
+        </div>
+
+ 
+        <footer class="footer">
+            <p>&copy; TWT App | Adam & J4r0 | 2018</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>

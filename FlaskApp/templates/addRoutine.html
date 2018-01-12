@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python_Flask_SQL App</title>
+ 
+ 
+    <link href="{{ url_for('static',filename='styles/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='styles/jumbotron-narrow.css') }}" rel="stylesheet">
+ 
+    <script type="text/javascript" src="{{ url_for('static',filename='js/JQuery.js') }}"></script>
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation"><a href="/showRoutines">Go Back</a>
+                    <li role="presentation" class="active"><a href="/userHome">Home</a>
+                    </li>
+                    <li role="presentation" class="active"><a href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">tu_wpisz_tytul App</h3>
+        </div>
+        <section>
+            <form class="form-horizontal" method="post" action="/addRoutine">
+                <fieldset>
+ 
+                    <!-- Form Name -->
+                    <legend>Add new Routine</legend>
+ 
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="txtTitle">Title</label>
+                        <div class="col-md-4">
+                            <input id="txtTitle" name="inputTitle" type="text" placeholder="placeholder" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="intCost">Cost</label>
+                        <div class="col-md-4">
+                            <input id="intCost" name="inputCost" type="number" step="0.01" placeholder="Value" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="intDay">Execution day</label>
+                        <div class="col-md-4">
+                            <input id="intDay" name="inputDay" type="number" min="1" max="31" placeholder="Value" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="startDateIn">Start Date</label>
+                        <div class="col-md-4">
+                            <input id="startDateIn" name="inputStartDate" type="date" placeholder="dd.mm.yyyy" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="finishDateIn">Finish Date</label>
+                        <div class="col-md-4">
+                            <input id="finishDateIn" name="inputFinishDate" type="date" placeholder="dd.mm.yyyy" class="form-control input-md">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="inputCurrency">Currency</label>
+                        <div class="col-md-4">
+			    <input id="inputCurrency" name="inputCurrency" type="text" list="currencies" autocomplete="off" placeholder="Currency" class="form-control input-md">
+			    <datalist id="currencies"></datalist>
+                        </div>
+                    </div>
+ 
+                    
+ 
+                    <!-- Button -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="singlebutton"></label>
+                        <div class="col-md-4">
+                            <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Add Routine" />
+                        </div>
+                    </div>
+ 
+                </fieldset>
+            </form>
+ 
+        </section>
+        <footer class="footer">
+            <p>&copy; TWT App | Adam & J4r0 | 2018</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>
