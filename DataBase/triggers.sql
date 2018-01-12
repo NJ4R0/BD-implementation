@@ -141,4 +141,3 @@ CREATE TRIGGER val_insert BEFORE INSERT ON valdata
 $$
 
 
-

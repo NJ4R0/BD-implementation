@@ -109,3 +109,54 @@ CREATE PROCEDURE add_transaction(time DATE, usernick VARCHAR(32), transactionnam
     INSERT INTO transactions(Date, NickName, SaleName, MoneySpent, Currency, ShopID) VALUE (time, usernick, transactionname, price, cCurrency, (SELECT ShopID FROM shops WHERE shop = ShopName LIMIT 1));
   END
 $$
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS add_routine;
+CREATE PROCEDURE add_routine(ftime DATE, ltime DATE, dayy INT(11), 
+usernick VARCHAR(32), transactionname VARCHAR(64), price FLOAT, 
+cCurrency CHAR(3))
+  BEGIN
+    IF (price<0)
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'price cannot be negative';
+    END IF;
+    IF (cCurrency NOT IN (SELECT Currency FROM currencies))
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'given currency does not exist in 
+database';
+    END IF;
+    INSERT INTO routines(RoutineName, NickName, FirstDate, 
+LastDate, Day, Cost, Currency) VALUE (transactionname, usernick, 
+ftime, ltime, dayy, price, cCurrency);
+  END
+$$
+
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS add_favourite;
+CREATE PROCEDURE add_favourite(usernick VARCHAR(32), 
+transactionname VARCHAR(64), price FLOAT, cCurrency CHAR(3), shop 
+VARCHAR(64))
+  BEGIN
+    IF (price<0)
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'price cannot be negative';
+    END IF;
+    IF (cCurrency NOT IN (SELECT Currency FROM currencies))
+      THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'given currency does not exist in 
+database';
+    END IF;
+    IF (shop NOT IN (SELECT ShopName FROM shops))
+    THEN
+      CALL add_shop(shop);
+    END IF;
+    INSERT INTO favourites(NickName, FavouriteName, ShopID, Cost, 
+Currency) VALUE (usernick, transactionname, (SELECT ShopID FROM 
+shops WHERE shop = ShopName LIMIT 1), price, cCurrency);
+  END
+$$
