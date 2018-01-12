@@ -1,5 +1,6 @@
 from PythonApp.dbconnection import *
 import re as regexp
+from flask import json
 
 
 def list_all_shops() -> tuple:
@@ -13,7 +14,17 @@ def list_all_shops() -> tuple:
     """
     try:
         connection = database_connect(CONST_DBHOST, CONST_DBUSER, CONST_DBPASSWD)
-        return execute_sql_command(connection, "SELECT * FROM shops")
+        shops = execute_sql_command(connection, "SELECT * FROM shops")
+        shops_dict = []
+        for shop in shops:
+            shop_dict = {
+            'Name': shop[0],
+            'Address': shop[1],
+            'Country': shop[2],
+            'City': shop[3]}
+            shops_dict.append(shop_dict)
+
+        return json.dumps(shops_dict)
     except Exception as e:
         print(e)
 
@@ -46,3 +57,34 @@ def simple_list_my_transactions(username: str) -> tuple:
         return ()
 
 
+def list_routines(username: str):
+    if not regexp.match('[A-Za-z0-9]+', username):
+        return NameError
+    try:
+        routines = execute_sql_command(database_connect(),
+                                       "SELECT * FROM routines WHERE NickName = '{0}';".format(username)
+                                       )
+        rout_ret = []
+        for rout in routines:
+            rout_ret.append({
+                'Name': rout[0],
+                'Nick': rout[1],
+                'Fdate': rout[2],
+                'Ldate': rout[3],
+                'Dayy': rout[4],
+                'Cost': rout[5],
+                'Curr': rout[6]
+            })
+        return json.dumps(rout_ret)
+    except Exception as e:
+        return e
+
+
+def list_favourites(username: str) -> json:
+    if not regexp.match('[A-Za-z0-9]+', username):
+        return NameError
+    try:
+        fav = execute_sql_command(database_connect(),
+                                  "SELECT * FROM favourites WHERE NickName = '{0}'".format(username))
+    except Exception as e:
+        return e
