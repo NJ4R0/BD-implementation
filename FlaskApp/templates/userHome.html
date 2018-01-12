@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python_Flask_SQL App</title>
+ 
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/bootstrap.min.css') }}">
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/jumbotron-narrow.css') }}">
+
+    <link link href="{{ url_for('static',filename='signup.css') }}" rel="stylesheet">
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/JQuery.js') }}"></script>
+
+    <script>
+	$(function(){
+		$.ajax({
+			url : '/getBudget',
+			type : 'GET',
+			success: function(res){
+				var div = $('<div>')
+    .attr('class', 'list-group')
+    .append($('<a>')
+        .attr('class', 'list-group-item active')
+        .append($('<h4>')
+            .attr('class', 'list-group-item-heading'),
+            $('<p>')
+            .attr('class', 'list-group-item-text')));
+							    
+				
+				
+				var wishObj = JSON.parse(res);
+				var wish = '';
+				
+				$.each(wishObj,function(index, value){
+					wish = $(div).clone();
+					$(wish).find('h4').text(value.Total + " Total monthly budget");
+					$(wish).find('p').text(value.Spent + " Ammount spent already");
+					$('.jumbotron').append(wish);
+				});
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
+    </script>
+ 
+ 
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+		    <li role="presentation"><a href="/showTransactions">Transactions</a></li>
+		    <li role="presentation"><a href="/showRoutines">Routines</a></li>
+		    <li role="presentation"><a href="/showFavourites">Favourites</a></li>
+		    <li role="presentation"><a href="/showShops">Shops</a></li>
+                    <li role="presentation" class="active"><a href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">tu_wpisz_tytul App</h3>
+        </div>
+ 
+        <div class="jumbotron">
+            <h1>Welcome Home !!</h1>
+	    <h2>Budget status:</h2>
+ 
+        </div>
+ 
+ 
+        <footer class="footer">
+            <p>&copy; TWT App | Adam & J4r0 | 2018</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>

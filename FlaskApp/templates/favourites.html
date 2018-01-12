@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Python_Flask_SQL App</title>
+ 
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/bootstrap.min.css') }}">
+ 
+    <link link rel="stylesheet" href="{{ url_for('static',filename='styles/jumbotron-narrow.css') }}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <link link href="{{ url_for('static',filename='signup.css') }}" rel="stylesheet">
+
+    <link link rel="stylesheet" href="{{ url_for('static',filename='font-awesome.min.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/JQuery.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.tmpl.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+
+
+    <script>
+            $(function () {
+            $.ajax({
+                url: '/getFavourites',
+                type: 'GET',
+                success: function (res) {
+                    var wishObj = JSON.parse(res);
+                    $('#ulist').empty();
+                    $('#listTemplate').tmpl(wishObj).appendTo('#ulist');
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+
+	function ConfirmDelete(elem){
+		localStorage.setItem('deleteId',$(elem).attr('data-id'));
+		$('#deleteModal').modal();
+	}
+	function Delete(){
+		$.ajax({
+			url : '/deleteFav',
+			data : {id:localStorage.getItem('deleteId')},
+			type : 'POST',
+			success: function(res){
+				var result = JSON.parse(res);
+				if(result.status == 'OK'){
+					$('#deleteModal').modal('hide');
+				}
+				else{
+					alert(result.status);	
+				}
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	}
+    </script>
+ 
+<style>
+     .trash { color:rgb(209, 91, 71); }
+.panel-body .checkbox { display:inline-block;margin:0px; }
+.list-group { margin-bottom:0px; }
+   </style> 
+
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+		    <li role="presentation"><a href="/showAddFavourite">New Favourite</a></li>
+                    <li role="presentation" class="active"><a href="/userHome">Home</a>
+                    <li role="presentation" class="active"><a href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">tu_wpisz_tytul App</h3>
+        </div>
+ 
+        <script id="listTemplate" type="text/x-jQuery-tmpl">
+            <li class="list-group-item">
+                <div class="checkbox">
+                    <label>
+                        Nickname: ${Nick}, Transaction: ${Name}, Shop: ${Shop}, Price: ${Cost}, Currency: ${Curr}
+                    </label>
+                </div>
+                <div class="pull-right action-buttons">
+                    <a data-id=${Id} onclick="ConfirmDelete(this)" ><span class="glyphicon glyphicon-trash"></span></a>
+                </div>
+            </li>
+        </script>
+
+         <div class="row">
+            <div class="col-md-12">
+
+                <div class="panel-body">
+
+                    <ul id="ulist" class="list-group"></ul>
+                </div>
+
+            </div>
+        </div>
+ 
+
+       <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="text-align:center;">
+        <h4 class="modal-title" style="color:red;" id="deleteModalLabel">You are going to Delete this forever !!</h4>
+      </div>
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="Delete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+        <footer class="footer">
+            <p>&copy; TWT App | Adam & J4r0 | 2018</p>
+        </footer>
+ 
+    </div>
+</body>
+ 
+</html>
