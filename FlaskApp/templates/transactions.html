@@ -21,7 +21,7 @@
     <script>
             $(function () {
             $.ajax({
-                url: '/getRoutines',
+                url: '/getTransactions',
                 type: 'GET',
                 success: function (res) {
                     var wishObj = JSON.parse(res);
@@ -63,7 +63,7 @@
             <li class="list-group-item">
                 <div class="checkbox">
                     <label>
-                        ${ID}, ${Datte}, ${Nick}, ${Sale}, ${Cost}, ${Currency}, ${Shop}
+                        ${ID}, ${Datte}, ${Nick}, ${Sale}, ${Cat}, ${Cost}, ${Currency}, ${Shop}
                     </label>
                 </div>
             </li>

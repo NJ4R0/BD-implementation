@@ -1,5 +1,6 @@
 from PythonApp.dbconnection import *
 import re as regexp
+from flask import json
 
 
 def add_transaction(
@@ -7,7 +8,7 @@ def add_transaction(
         username: str,
         transactionname: str,
         categoryname: str,
-        price: float,
+        price,
         currency: str,
         shopname: str
 ) -> bool:
@@ -19,9 +20,9 @@ def add_transaction(
             regexp.match('[A-Za-z0-9]+', transactionname) and
             regexp.match('[A-Z]{3}', currency) and
             regexp.match('[A-Za-z0-9]', shopname) and
-            regexp.match('[A-Za-z]', categoryname)
+            regexp.match('[A-Za-z]', categoryname) and
+            regexp.match('\d+([.,]\d{2})?', price)
     ):
-        print("wrong input format")
         return False
     try:
         execute_sql_command(
@@ -48,16 +49,21 @@ def monthly_balance(
     try:
         transactions = execute_sql_command(
             database_connect(),
-            """SELECT * 
-                FROM transactions 
+            """SELECT  accountsettings.BudgetPerMonth, SUM(transactions.MoneySpent) 
+                FROM transactions JOIN accountsettings ON transactions.NickName = accountsettings.NickName
                 WHERE YEAR(transactions.Date) = {0} 
-                AND MONTH(transactions.Date) = {1} 
-                AND transactions.NickName = \'{2}\';
+                AND (
+                  (MONTH(transactions.Date) = {1} AND DAY(transactions.Date)>=accountsettings.MonthStart) 
+                  OR 
+                  ({1}<>12 AND MONTH(transactions.Date) = {1}+1 AND DAY(transactions.Date)<accountsettings.MonthStart)
+                  OR 
+                  ({1}=12 AND MONTH(transactions.Date) = 1 AND DAY(transactions.Date)<accountsettings.MonthStart))
+                AND transactions.NickName = \'{2}\'
+                GROUP BY NickName;
             """.format(str(year), str(month), username)
         )
-        total_spent = 0.0
-        for i in range(len(transactions)):
-            total_spent = total_spent + transactions[i][5]
-        return {'total_spent': total_spent, 'history': transactions}
+        return json.dumps([{'Total': transactions[0][0],
+                            'Spent': transactions[0][1],
+                            'Left':  str(float(transactions[0][0])-float(transactions[0][1]))}])
     except Exception as e:
         return {'stacktrace': e}
