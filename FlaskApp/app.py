@@ -101,7 +101,6 @@ def getBudget():
     try:
         if session.get('user'):
             _user = session.get('user')
-
             return monthly_balance(int(datetime.datetime.now().month), int(datetime.datetime.now().year), _user)
         else:
             return render_template('error.html', error='Unauthorized Access')
@@ -126,23 +125,7 @@ def getFavourites():
     try:
         if session.get('user'):
             _user = session.get('user')
-
-            con = mysql.connect()
-            cur = con.cursor()
-            cur.callproc('show_fav', (_user,))
-            shops = cur.fetchall()
-
-            shops_dict = []
-            for shop in shops:
-                shop_dict = {
-                    'Nick': shop[0],
-                    'Name': shop[1],
-                    'Shop': shop[6],
-                    'Cost': shop[3],
-                    'Curr': shop[4]}
-                shops_dict.append(shop_dict)
-
-            return json.dumps(shops_dict)
+            return list_favourites(_user)
         else:
             return render_template('error.html', error='Unauthorized Access')
     except Exception as e:
