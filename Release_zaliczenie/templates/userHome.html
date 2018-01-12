@@ -36,7 +36,7 @@
 				$.each(wishObj,function(index, value){
 					wish = $(div).clone();
 					$(wish).find('h4').text(value.Total + " Total monthly budget");
-					$(wish).find('p').text(value.Spent + " Ammount spent already");
+					$(wish).find('p').text(value.Spent + " Amount spent already");
 					$('.jumbotron').append(wish);
 				});
 			},
