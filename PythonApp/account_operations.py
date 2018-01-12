@@ -32,7 +32,7 @@ def signup_user(username: str, email: str, password: str) -> bool:
         key = rsa.PublicKey.save_pkcs1(pub, 'DER').hex()
         execute_sql_command(
             database_connect(CONST_DBHOST, CONST_DBUSER, CONST_DBPASSWD),
-            "CALL add_user( \'" + username + "\', \'" + email + "\', \'" + signature + "\', \'" + key + "\' )"
+            "CALL add_user( \'" + username + "\', \'" + email + "\', \'" + signature + "\', \'" + key + "\', 'N' )"
         )  # TODO: localhost
         return True
     except Exception as e:
@@ -54,7 +54,7 @@ def validate_user(email: str, password: str) -> bool:
     try:
         (signature, key) = execute_sql_command(
             database_connect(CONST_DBHOST, CONST_DBUSER, CONST_DBPASSWD),
-            "SELECT valdata.Password, valdata.'key' FROM valdata WHERE EMail = '{0}'".format(email)
+            "SELECT valdata.Password, valdata.key FROM valdata WHERE EMail = '{0}'".format(email)
         )[0]  # TODO: localhost
         pubkey = rsa.PublicKey.load_pkcs1(unhexlify(key), 'DER')
         return rsa.verify(password.encode('utf-8'), unhexlify(signature), pubkey)
