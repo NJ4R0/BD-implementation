@@ -84,7 +84,25 @@ def list_favourites(username: str) -> json:
     if not regexp.match('[A-Za-z0-9]+', username):
         return NameError
     try:
-        fav = execute_sql_command(database_connect(),
-                                  "SELECT * FROM favourites WHERE NickName = '{0}'".format(username))
+        fav = execute_sql_command(
+            database_connect(),
+            """
+                SELECT NickName, FavouriteName, ShopName, Cost, Currency, Category
+                FROM favourites 
+                  JOIN shops ON favourites.ShopID = shops.ShopID 
+                  JOIN categories ON FavouriteName = SaleName
+                WHERE NickName = '{0}'""".format(username)
+        )
+        ret = []
+        for f in fav:
+            ret.append({
+                    'Nick': f[0],
+                    'Name': f[1],
+                    'Shop': f[2],
+                    'Cost': f[3],
+                    'Curr': f[4],
+                    'Cat': f[5]
+            })
+        return json.dumps(ret)
     except Exception as e:
         return e
