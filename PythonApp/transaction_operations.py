@@ -26,14 +26,11 @@ def add_transaction(
     try:
         execute_sql_command(
             database_connect(),
-            "CALL add_transaction(" +
-            date + ", " +
-            "\"" + username + "\", " +
-            "\"" + transactionname + "\", " +
-            "\"" + categoryname + "\", " +
-            str(price) + ", " +
-            "\"" + currency + "\", " +
-            "\"" + shopname + "\");"
+            "CALL add_transaction( {0}, \'{1}\', \'{2}\', \'{3}\', {4}, \'{5}\', \'{6}\');".format(date, username,
+                                                                                                   transactionname,
+                                                                                                   categoryname,
+                                                                                                   str(price), currency,
+                                                                                                   shopname)
         )
         return True
     except Exception as e:
@@ -51,10 +48,12 @@ def monthly_balance(
     try:
         transactions = execute_sql_command(
             database_connect(),
-            "SELECT * FROM transactions " +
-            "WHERE YEAR(transactions.Date) = " + str(year) + " " +
-            "AND MONTH(transactions.Date) = " + str(month) + " " +
-            "AND transactions.NickName = \"" + username + "\";"
+            """SELECT * 
+                FROM transactions 
+                WHERE YEAR(transactions.Date) = {0} 
+                AND MONTH(transactions.Date) = {1} 
+                AND transactions.NickName = \'{2}\';
+            """.format(str(year), str(month), username)
         )
         total_spent = 0.0
         for i in range(len(transactions)):
@@ -62,4 +61,3 @@ def monthly_balance(
         return {'total_spent': total_spent, 'history': transactions}
     except Exception as e:
         return {'stacktrace': e}
-

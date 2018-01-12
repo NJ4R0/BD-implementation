@@ -1,6 +1,7 @@
 from PythonApp.dbconnection import *
 import re as regexp
 
+
 def list_all_shops() -> tuple:
     """
     lists all shops
@@ -37,8 +38,11 @@ def simple_list_my_transactions(username: str) -> tuple:
         return ()
     try:
         connection = database_connect()
-        return execute_sql_command(connection, "SELECT * FROM transactions WHERE NickName = \"" + username + "\"")
+        return execute_sql_command(connection,
+                                   "SELECT * FROM transactions WHERE NickName = \'{0}\'".format(username)
+                                   )
     except Exception as e:
         print(e)
         return ()
+
 
